@@ -1,8 +1,8 @@
 import pandas as pd
-from file_utils import *
 import os
 
 def read_file(filename:str,return_type:str='dataframe'):
+    from .file_utils import FileHandler
     file:FileHandler = FileHandler(filename)
     return file.get_data(return_type=return_type)    
 
