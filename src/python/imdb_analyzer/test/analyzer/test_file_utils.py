@@ -1,5 +1,6 @@
 import os,sys
 test_data_path = os.path.abspath('../../../../../data/movie_metadata.csv')
+#insert analyzer package root
 sys.path.insert(0,os.path.abspath('../../'))
 from analyzer import FileHandler
 
@@ -9,18 +10,25 @@ TEST_FILE_COLNAMES = set({'color','director_name','num_critic_for_reviews','dura
 
 def main():
     no_file:bool = False
+    other_file_error:bool = False
     file:FileHandler = FileHandler(test_data_path)
     try:
         data_frame = file.get_data()
         dict_list = file.get_data(return_type = 'dictlist')
     except FileNotFoundError as e:
         no_file = True
+    except Exception as e:
+        other_file_error = True
     
     print("Ensuring test data file is in correct location...")
     
-    assert not no_file
+    assert not no_file    
     
-    print("File found! Reading as DictList and verifying shape...")
+    print("File found! Validating test data file is not malformed...")
+
+    assert not other_file_error
+
+    print("File validated! Reading as DictList and verifying shape...")
     
     assert len(dict_list) == TEST_FILE_ROWS
     assert len(dict_list[0].keys()) == TEST_FILE_COLS
