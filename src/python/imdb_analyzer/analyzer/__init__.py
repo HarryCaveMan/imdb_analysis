@@ -1,2 +1,2 @@
-from .file_utils import *
-from .analyzer import *
+from analyzer.file_utils import *
+from .analyzer_core import *

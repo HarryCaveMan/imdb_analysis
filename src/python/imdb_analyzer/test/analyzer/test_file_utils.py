@@ -1,8 +1,10 @@
 import os,sys
-test_data_path = os.path.abspath('../../../../../data/movie_metadata.csv')
-#insert analyzer package root
-sys.path.insert(0,os.path.abspath('../../'))
-from analyzer import FileHandler
+file_dir = os.path.split(os.path.abspath(__file__))[0]
+test_data_path = os.path.abspath(file_dir+'../../../../../../data/movie_metadata.csv')
+# insert analyzer package root
+sys.path.insert(0,os.path.abspath(file_dir+'../../../analyzer'))
+from file_utils import FileHandler
+
 
 TEST_FILE_ROWS = 5043
 TEST_FILE_COLS = 28
@@ -41,6 +43,9 @@ def main():
     assert set(data_frame.columns) == TEST_FILE_COLNAMES
     
     print("Done! All file tests passed!")
+
+def test_file_suite():
+    main()
 
 if __name__=='__main__':
     main()

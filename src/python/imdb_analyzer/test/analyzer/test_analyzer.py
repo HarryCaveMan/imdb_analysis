@@ -1,18 +1,19 @@
 import os,sys
 import pandas as pd
-DATA_PATH = os.path.abspath('../../../../../data/movie_metadata.csv')
-#insert analyzer package root
-sys.path.insert(0,os.path.abspath('../../'))
-from analyzer import *
+file_dir = os.path.split(os.path.abspath(__file__))[0]
+DATA_PATH = os.path.abspath(file_dir+'../../../../../../data/movie_metadata.csv')
+# insert analyzer package root
+sys.path.insert(0,os.path.abspath(file_dir+'../../../analyzer'))
+from analyzer_core import *
 
 #build small table I can hand calculate on to verify
 TEST_COLUMN_NAMES = ['actor_1_name','actor_2_name','actor_3_name','genres','budget','gross']
 TEST_COLUMNS = [
     ['Aaahnold','Lucille Ball','Aaahnold','Aaahnold','Vinnie Jones','Lucille Ball'],
     ['Lucille Ball','Aaahnold','Vinnie Jones','Lucille Ball','Aaahnold','Vinnie Jones'],
-    # Just using a new actor (Mel Gibson) only on one row and setting this film's gross to zero 
+    # Just using a new actor (Mel Gibson) only on one row and setting this film's gross to zero
     # This gives gives me three easy tests for my math functions:
-    # Aaahnold and Vinnie MUST have lower averages than lucy, dragged down by Mel
+    # Aaahnold and Vinnie MUST have lower ranks than lucy, dragged down by Mel
     # Mel MUST be in last with zero gross
     # Lucy MUST be in first
     # having all other rows same just makes manual math easier on me for remaining tests
@@ -70,17 +71,39 @@ def main():
     assert top_genres_mean.loc['rom com']['gross_profit'] == 500
     assert top_genres_mean.loc['rom com']['gross'] == 1500
     assert top_genres_mean.loc['rom com']['budget'] == 1000
-    print('All tests passed for Average metric!')
-    print('Top Actors (metric sum):')
+    print('All tests passed for Average metric!\n\n')
+    print('Verifying actor union function...')
     actors_union = union_actor_columns(TEST_DF)
+    assert list(actors_union['actor_name']) == list(TEST_DF['actor_1_name'])+list(TEST_DF['actor_2_name'])+list(TEST_DF['actor_3_name'])
+    print('Function Verified!\n\n')
+    print('Top Actors (metric sum):')
     top_actors_gross_sum = calculate_top_gross_profit(data_frame=actors_union,colnames=['actor_name'],top_n=6,metric='sum')
     print(top_actors_gross_sum)
     print('Verifying first Lucille Ball and last place Mel Gibson...')
     assert top_actors_gross_sum.index[0] == 'Lucille Ball'
     assert top_actors_gross_sum.index[3] == 'Mel Gibson'
     print('First and last Verified, verifying Lucille Ball stats...')
-    # TODO finish unit tests for stats
+    assert top_actors_gross_sum.loc['Lucille Ball']['gross_profit'] == 21810
+    assert top_actors_gross_sum.loc['Lucille Ball']['gross'] == 23000
+    assert top_actors_gross_sum.loc['Lucille Ball']['budget'] == 1190
+    print('Lucille Ball Verified, verifying Mel Gibson stats...')
+    assert top_actors_gross_sum.loc['Mel Gibson']['gross_profit'] == -50
+    assert top_actors_gross_sum.loc['Mel Gibson']['gross'] == 0
+    assert top_actors_gross_sum.loc['Mel Gibson']['budget'] == 50
+    print('Mel Gibson Verified, verifying Vinny Jones...')
+    assert top_actors_gross_sum.loc['Vinnie Jones']['gross_profit'] == 21760
+    assert top_actors_gross_sum.loc['Vinnie Jones']['gross'] == 23000
+    assert top_actors_gross_sum.loc['Vinnie Jones']['budget'] == 1240
+    print('Vinnie Jones Verified, verifying Vinny Jones...')
+    assert top_actors_gross_sum.loc['Aaahnold']['gross_profit'] == 21760
+    assert top_actors_gross_sum.loc['Aaahnold']['gross'] == 23000
+    assert top_actors_gross_sum.loc['Aaahnold']['budget'] == 1240
+    print('All tests passed!')
     # full_run()
+
+
+def test_analyzer_suite():
+    main()
 
 if __name__=='__main__':
     main()
