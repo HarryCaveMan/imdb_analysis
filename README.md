@@ -90,6 +90,13 @@ I chose not to pack the entire data file into the container to simulate how it m
 docker run -it -v `pwd`/data:/opt/imdb_analyzer/data -p 80:8080 imdb_analyzer
 ```
 
+## Accessing the endpoints
+Once the server is running, you can access it at `localhost:8080`. All the api endpointas are under the path `/api`. Currently, there are 3:
+
+- `/api/actor/{name}` Will return all movies that actor appeared in any role from the data as a table.
+- `api/actors/top/{n}` Will return top `n` actors same as the main script.
+- `/api/genres/top/{n}` Will return top `n` genres by raw gross profit.
+
 
 ## Notes on possible improvements:
 
