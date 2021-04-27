@@ -18,7 +18,18 @@ async def find_actor(name:str):
         # actor = all_actors[all_actors['actor_name']==name]
         actor = data[(data['actor_1_name']==name) | (data['actor_2_name']==name) | (data['actor_3_name']==name)]
     except Exception as e:
-        raise HTTPException(status_code=404, detail={"error":str(e)})
+        raise HTTPException(status_code=404, detail={"error":"Actor Not Found"})
+    return actor.to_html()
+
+@app.get("/actors/financial/{name}",response_class=HTMLResponse)
+async def find_actor(name:str):
+    try:
+        # actor = all_actors[all_actors['actor_name']==name]
+        actor_films = all_actors[all_actors['actor_name']==name]
+        actor = calculate_top_gross_profit(data_frame=actor_films,colnames=['actor_name'],top_n=1)
+    except Exception as e:
+        
+        raise HTTPException(status_code=404, detail={"error":"Actor Not Found"})
     return actor.to_html()
 
 @app.get("/actors/top/{n}",response_class=HTMLResponse)
