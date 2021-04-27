@@ -105,3 +105,4 @@ Once the server is running, you can access it at `localhost:8080`. All the api e
 - Use generators more instead of in-memory iterables
 - Integration tests for server (or even mock unit tests)
 - Deploy to openshift
+- HTML is *technically* a text output, but that could be changed easily based on need
