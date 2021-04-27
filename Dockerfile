@@ -1,4 +1,4 @@
-ARG DATA_DIR=/opt/data
+ARG OPR_DIR=/opt/ml_analyzer
 FROM centos:8 as centos-py36-nginx
 
 RUN yum -y update &&\
@@ -22,13 +22,16 @@ ADD etc/nginx /etc/nginx
 
 FROM centos-py36-nginx as server-build
 
-RUN useradd asgi-user 
+ADD server-requirements.txt $OPR_DIR
+
+RUN pip install -r $OPT_DIR/server-requirements.txt &&\
+    useradd asgi-user 
 
 WORKDIR /home/asgi-user
 
 USER asgi-user
 
-ENV DATA_DIR=$DATA_DIR
+ENV DATA_DIR=$OPT_DIR/data
 
 ADD src/python apps
 
@@ -36,9 +39,7 @@ USER root
 
 WORKDIR /home/asgi-user/apps/imdb_analyzer
 
-RUN pip install -r server-requirements.txt
-
-ENV DATA_DIR=$DATA_DIR
+ENV DATA_DIR=$OPT_DIR/data
 
 RUN chmod 0750 server/server-controller.sh 
 
