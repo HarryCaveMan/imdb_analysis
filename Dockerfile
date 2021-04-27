@@ -1,7 +1,15 @@
-ARG OPR_DIR=/opt/ml_analyzer
-FROM centos:8 as centos-py36-nginx
 
-RUN yum -y update &&\
+# I know it doesn't save me any space but it doesn't cost any and I like the organization
+# I have an old version of docker on this laptop that has an issue with 'blank string override'
+# ARG OPT_DIR=/opt/ml-analyzer
+FROM centos as centos-py36-nginx
+
+ENV OPT_DIR=/opt/ml-analyzer
+ENV DATA_DIR=$OPT_DIR/data
+ENV DATA_FILE=movie_metadata.csv
+
+RUN mkdir -p $DATA_DIR &&\
+    yum -y update &&\
     dnf -y update &&\
     dnf -y install dnf-utils &&\
     yum clean all && dnf clean all
@@ -20,9 +28,7 @@ RUN rpm --import  https://nginx.org/keys/nginx_signing.key &&\
 
 ADD etc/nginx /etc/nginx
 
-FROM centos-py36-nginx as server-build
-
-ADD server-requirements.txt $OPR_DIR
+ADD server-requirements.txt $OPT_DIR
 
 RUN pip install -r $OPT_DIR/server-requirements.txt &&\
     useradd asgi-user 
@@ -31,17 +37,14 @@ WORKDIR /home/asgi-user
 
 USER asgi-user
 
-ENV DATA_DIR=$OPT_DIR/data
-
 ADD src/python apps
 
 USER root
 
 WORKDIR /home/asgi-user/apps/imdb_analyzer
 
-ENV DATA_DIR=$OPT_DIR/data
-
-RUN chmod 0750 server/server-controller.sh 
+RUN chmod 0750 server/server-controller.sh &&\
+    chown -R asgi-user:nginx $DATA_DIR
 
 EXPOSE 80
 

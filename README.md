@@ -66,3 +66,34 @@ Jennifer Lawrence   2.367856e+09  1.182150e+09  1.185706e+09
 John Ratzenberger   2.509861e+09  1.365000e+09  1.144861e+09
 Robert Pattinson    1.841497e+09  7.120000e+08  1.129497e+09
 ```
+
+# Bonus Server
+
+The bonus question I was most excited about was the api server. I decided to use fastapi/uvicorn, with gunicorn as the process manager and an nginx reverse proxy. I started by setting up just a single test endpoint to verify the stack. Then I realized it did not say which information to get, so I just had pandas return all the rows that actor was in either the `actor_1_name` `actor_2_name` or `actor_3_name` column as an html table (pretty neat it does that for you). I also implemented the first 2 questions path-parameterized endpoints to return thr top `n` genres and actors.
+
+## Building the server
+
+From the repo-s root, just run 
+
+```sh
+# You can use any tag you like
+docker build -t imdb_analyzer .
+```
+
+## Running the server
+
+I chose not to pack the entire data file into the container to simulate how it might read in a file from a remote or even distributed file store, so you can attach the data volume to the default data dir for the application, which is `/opt/imdb_analyzer/data`. Here's an example run command that would work from repo root if you tagged your container with `imdb_analyzer` as shown above:
+
+```sh
+# run as daemon (-d instead -it) if you don't want app logs
+# use -p 80:8080 because nginx configured to listen http on 80 (see /etc/ngix/nginx.conf in repo)
+docker run -it -v `pwd`/data:/opt/imdb_analyzer/data -p 80:8080 imdb_analyzer
+```
+
+
+## Notes on possible improvements:
+
+- Better server logging
+- Use generators more instead of in-memory iterables
+- Integration tests for server (or even mock unit tests)
+- Deploy to openshift
