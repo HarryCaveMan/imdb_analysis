@@ -22,7 +22,7 @@ async def find_actor(name:str):
     return actor.to_html()
 
 @app.get("/actors/financial/{name}",response_class=HTMLResponse)
-async def find_actor(name:str):
+async def find_actor_fincial(name:str):
     try:
         # actor = all_actors[all_actors['actor_name']==name]
         actor_films = all_actors[all_actors['actor_name']==name]
@@ -33,7 +33,7 @@ async def find_actor(name:str):
     return actor.to_html()
 
 @app.get("/actors/top/{n}",response_class=HTMLResponse)
-async def find_actor(n:int):
+async def find_top_actors(n:int):
     if not n: n=10
     try: 
         return calculate_top_gross_profit(data_frame=all_actors,colnames=['actor_name'],top_n=n).to_html() 
@@ -41,7 +41,7 @@ async def find_actor(n:int):
         raise HTTPException(status_code=500, detail="zzzzzz")
 
 @app.get("/genres/top/{n}",response_class=HTMLResponse)
-async def find_actor(n:int):
+async def find_top_genres(n:int):
     if not n: n=10
     try:
         return calculate_top_gross_profit(data_frame=data,colnames=['genres'],top_n=n).to_html()
