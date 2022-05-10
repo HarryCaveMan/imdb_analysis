@@ -30,7 +30,7 @@ ADD etc/nginx /etc/nginx
 
 ADD server-requirements.txt $OPT_DIR
 
-RUN pip install -r $OPT_DIR/server-requirements.txt &&\
+RUN pip install --no-cache -r $OPT_DIR/server-requirements.txt &&\
     useradd asgi-user 
 
 WORKDIR /home/asgi-user

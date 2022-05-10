@@ -87,7 +87,7 @@ I chose not to pack the entire data file into the container to simulate how it m
 ```sh
 # run as daemon (-d instead -it) if you don't want app logs
 # use -p 80:8080 because nginx configured to listen http on 80 (see /etc/ngix/nginx.conf in repo)
-docker run -it -v `pwd`/data:/opt/imdb_analyzer/data -p 80:8080 imdb_analyzer
+docker run -it -v "`pwd`/data":'/opt/ml-analyzer/data' -p 8080:80 imdb_test
 ```
 
 ## Accessing the endpoints
@@ -103,6 +103,7 @@ Once the server is running, you can access it at `localhost:8080`. All the api e
 
 - Better server logging
 - Use generators more instead of in-memory iterables
+- Some of the methods that involve blended results could use improved algorithms
 - Integration tests for server (or even mock unit tests)
 - Deploy to openshift
 - HTML is *technically* a text output, but that could be changed easily based on need

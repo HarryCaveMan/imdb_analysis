@@ -28,12 +28,20 @@ stop() {
     fi
 }
 
+restart() {
+  stop
+  #TODO wait should poll that port 80 is unbound (maybe on 1sec interval) and sockfile is cleaned up
+  sleep 15
+  start
+}
+
+
 case $1 in
-  start|stop)
+  start|stop|restart)
     $1
   ;;
   *)
-    echo "unsuported arg"
+    echo "unsuported arg (start|stop|restart suported)"
     exit 1
   ;;
 esac
