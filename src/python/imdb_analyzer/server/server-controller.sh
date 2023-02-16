@@ -2,6 +2,7 @@
 
 start(){
     if [ `whoami`='root' ]; then
+       # Starts all services
        nginx
        setfacl -m u:asgi-user:rwx /tmp       
        PYTHONPATH=.
