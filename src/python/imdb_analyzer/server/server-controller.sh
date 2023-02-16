@@ -3,7 +3,7 @@
 start(){
     if [ `whoami`='root' ]; then
        nginx
-       setfacl -m u:asgi-user:rwx /tmp
+       setfacl -m u:asgi-user:rwx /tmp       
        PYTHONPATH=.
        gunicorn \
          -u asgi-user \
@@ -12,6 +12,7 @@ start(){
          -m 007 \
          -w 4 -k uvicorn.workers.UvicornH11Worker \
          server:app
+
     else
         echo "must be root!"
         exit 1
